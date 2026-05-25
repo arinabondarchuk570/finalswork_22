@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  tests:
+    build: .
+    container_name: qa-tests-finals
+    volumes:
+      - ./allure-results:/app/allure-results
+      - ./logs:/app/logs
+    environment:
+      - BASE_URL=http://host.docker.internal:3000
+    command: pytest -v --alluredir=/app/allure-results
+    restart: "no"
+
+  allure:
+    image: "frankescobar/allure-docker-service"
+    container_name: allure-report
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./allure-results:/app/allure-results
+    environment:
+      - CHECK_RESULTS_EVERY_SECONDS=2
